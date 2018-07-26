@@ -2,14 +2,12 @@ import * as functions from 'firebase-functions';
 
 import {
     dialogflow,
-    Parameters,
-    Contexts,
-    Context,
-    Suggestions,
-    BasicCard,
-    Button,
     SimpleResponse,
 } from 'actions-on-google';
+
+import { ssml as ssmlText } from './templates/default';
+
+const format = require("string-template");
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
@@ -36,9 +34,17 @@ app.intent('N Times Tables', conv => {
         tableSpeech += `<speak>${i} maal ${N} = ${(i * N)}</speak><break time="0.3s" strength="strong"/>`;
     }
 
+    const values: number[] = [];
+    for (let i = 1; i <= maxTimes; i++) {
+        values.push(i * N);
+    }
+
+    const speechText = format(ssmlText, [ N, ...values]);
+
+
     // let response = 
     conv.close(new SimpleResponse({
-        speech: `<speak>${tableSpeech}</speak>`,
+        speech: speechText,
         text: tableText
     }))
 
