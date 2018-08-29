@@ -43,4 +43,4 @@ app.intent('N Times Tables', conv => {
   );
 });
 
-exports.assistant = functions.https.onRequest(app);
+exports.assistant = functions.region('europe-west1').https.onRequest(app);
